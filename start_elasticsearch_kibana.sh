@@ -1,0 +1,1 @@
+#!/bin/bash# Start Elasticsearchdocker run -d --name elasticsearch -p 9200:9200 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.17.0# Start Kibanadocker run -d --name kibana -p 5601:5601 --link elasticsearch:elasticsearch docker.elastic.co/kibana/kibana:7.17.0
