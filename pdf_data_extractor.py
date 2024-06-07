@@ -8,7 +8,6 @@ Created on Thu Jun  6 11:21:50 2024
 import os
 import json
 import sys
-import PyPDF2
 
 def extract_data(file_path):
     # Extract the filename from the path
@@ -44,6 +43,9 @@ if __name__ == "__main__":
     try:
         result = extract_data(file_path)
         print(result)
+    except Exception as e:
+        print(f"Error: {str(e)}", file=sys.stderr)
+        sys.exit(1)
     except Exception as e:
         print(f"Error: {str(e)}", file=sys.stderr)
         sys.exit(1)
