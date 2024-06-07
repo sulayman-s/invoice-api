@@ -18,6 +18,7 @@ import hashlib
 app = FastAPI()
 # Explicitly connect to Elasticsearch with scheme
 es = Elasticsearch([{"host": "localhost", "port": 9200, "scheme": "http"}])
+#es = Elasticsearch(['http://elasticsearch:9200'])
 
 # create the pdf data index in elasticsearch
 es.indices.create(index='pdf_data', ignore=400)
