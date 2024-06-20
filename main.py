@@ -36,7 +36,7 @@ def extract_data(file_path: str) -> dict:
     filename_json = result.stdout.strip()
     return json.loads(filename_json)
 
-def store_initial_status(file_path,file_hash):
+def store_initial_status(file_path, file_hash):
     """Store the initial status along with the file hash in Elasticsearch."""
     data = {"status": "processing", "file_hash": file_hash}
     es.index(index="pdf_data", id=file_hash, body=data)
@@ -45,7 +45,6 @@ def store_initial_status(file_path,file_hash):
 def update_status(doc_id: str, filename_data: dict):
     filename_data["status"] = "complete"
     es.update(index="pdf_data", id=doc_id, body={"doc": filename_data})
-
 
 def process_file(file_path: str, doc_id: str):
     """Process the file and store its initial status in Elasticsearch."""
@@ -89,7 +88,7 @@ async def upload_pdf(background_tasks: BackgroundTasks, file: UploadFile = File(
         return {"status": "file has already been processed"}   
     else:     
     
-        doc_id = store_initial_status(file_location,file_hash)
+        doc_id = store_initial_status(file_location, file_hash)
         background_tasks.add_task(process_file, file_location, doc_id)
         return {"status": "processing", "id": doc_id}
 
@@ -151,6 +150,40 @@ async def get_status_by_filename(filename: str = Query(..., description="The fil
         })
         statuses = [{"id": hit["_id"], "status": hit["_source"]["status"]} for hit in response["hits"]["hits"]]
         return {"statuses": statuses}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/data/{doc_id}")
+async def get_data_by_id(doc_id: str):
+    try:
+        response = es.get(index="pdf_data", id=doc_id)
+        return JSONResponse(content=response["_source"])
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/data-by-filename/")
+async def get_data_by_filename(filename: str = Query(..., description="The filename to search for")):
+    try:
+        response = es.search(index="pdf_data", body={
+            "query": {
+                "match": {
+                    "filename": filename
+                }
+            }
+        })
+        if response["hits"]["total"]["value"] == 0:
+            raise HTTPException(status_code=404, detail="Data not found")
+        data = [hit["_source"] for hit in response["hits"]["hits"]]
+        return JSONResponse(content={"data": data})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/all-docs/")
+async def get_all_docs():
+    try:
+        response = es.search(index="pdf_data", body={"query": {"match_all": {}}}, size=10000)  # Adjust size as needed
+        docs = [{"id": hit["_id"], **hit["_source"]} for hit in response["hits"]["hits"]]
+        return JSONResponse(content={"documents": docs})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
