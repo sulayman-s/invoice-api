@@ -103,7 +103,28 @@ curl -X GET "http://127.0.0.1:8000/status-by-filename/?filename=your_file.pdf"
 
 ```
 
-By following these steps, you'll have Elasticsearch, Kibana, and the FastAPI application running and ready to handle PDF uploads and store their statuses in Elasticsearch.
+To get the data of a specific document by its ID:
+
+```
+curl -X GET "http://127.0.0.1:8000/data/{doc_id}"
+
+```
+
+To get the data of a document by its filename:
+
+```
+curl -X GET "http://127.0.0.1:8000/data-by-filename/?filename=your_file.pdf"
+
+```
+
+To get all documents in the pdf_data index:
+
+```
+curl -X GET "http://127.0.0.1:8000/all-docs/"
+
+```
+
+By following these steps, you'll have Elasticsearch, Kibana, and the FastAPI application running and ready to handle PDF uploads, store their statuses, and retrieve extracted data from Elasticsearch.
 
 
 
