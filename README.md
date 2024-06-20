@@ -1,8 +1,9 @@
 # PDF Data Extraction API
 
-This project is a FastAPI application that allows you to upload PDF files, extract metadata, and store the results in Elasticsearch. You can also check the status of the PDF processing through various endpoints.
+This project is a FastAPI application that allows you to upload PDF files, extract metadata, and store the results in SQLite. You can also check the status of the PDF processing and retrieve the extracted data through various endpoints.
 
 ## Directory Structure
+
 
 project_root/
 │
@@ -10,7 +11,6 @@ project_root/
 ├── pdf_data_extractor.py
 ├── main.py
 ├── requirements.txt
-└── start_elasticsearch_kibana.sh
 
 
 ## Files
@@ -19,46 +19,21 @@ project_root/
 
 The script to extract data from a PDF.
 
+### 2. `main.py`
 
-### 2. main.py
+The FastAPI application to handle PDF uploads and interact with SQLite.
 
-The FastAPI application to handle PDF uploads and interact with Elasticsearch.
-
-### 3. requirements.txt
+### 3. `requirements.txt`
 
 List of Python dependencies.
 
-
-### 4. start_elasticsearch_kibana.sh
-
-A shell script to start Elasticsearch and Kibana using Docker.
-
-```
-#!/bin/bash
-
-# Start Elasticsearch
-docker run -d --name elasticsearch -p 9200:9200 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.17.0
-
-# Start Kibana
-docker run -d --name kibana -p 5601:5601 --link elasticsearch:elasticsearch docker.elastic.co/kibana/kibana:7.17.0
-
-```
-
 ## Instructions
-Set Up Elasticsearch and Kibana
 
-Run the following script to start Elasticsearch and Kibana using Docker:
-
-```
-chmod +x start_elasticsearch_kibana.sh
-./start_elasticsearch_kibana.sh
-```
-
-## Install Python Dependencies
+### Install Python Dependencies
 
 Ensure you have Python installed, then install the dependencies using pip:
 
-```
+```sh
 pip install -r requirements.txt
 ```
 
@@ -124,7 +99,7 @@ curl -X GET "http://127.0.0.1:8000/all-docs/"
 
 ```
 
-By following these steps, you'll have Elasticsearch, Kibana, and the FastAPI application running and ready to handle PDF uploads, store their statuses, and retrieve extracted data from Elasticsearch.
+By following these steps, you'll have the FastAPI application running and ready to handle PDF uploads, store their statuses, and retrieve extracted data from SQLite.
 
 
 

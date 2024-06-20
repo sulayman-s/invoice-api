@@ -1,1 +1,1 @@
-fastapiuvicornelasticsearch
+fastapiuvicornsqlite3
